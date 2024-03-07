@@ -1,7 +1,10 @@
-﻿using StudentsAdminPortal.API.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using StudentsAdminPortal.API.Models;
 using System.Collections.Generic;
 using System.Linq;
-
+using ContactInfo = StudentsAdminPortal.API.Models.ContactInfo;
+using Student = StudentsAdminPortal.API.Models.Student;
 namespace StudentsAdminPortal.Repository
 {
     public class StudentRepository : IStudentRepository
@@ -34,6 +37,7 @@ namespace StudentsAdminPortal.Repository
                         FirstName = s.FirstName,
                         LastName = s.LastName,
                         LastDate = s.LastDate,
+                        CreditScoreId = c.Id,
                         FirstYear = c == null ? null : c.FirstYear,
                         SecondYear = c == null ? null : c.SecondYear,
                         ThirdYear = c == null ? null : c.ThirdYear,
@@ -46,14 +50,30 @@ namespace StudentsAdminPortal.Repository
                     }).ToList();
         }
 
-        public void AddStudent(Student student)
+        public void AddStudent(Student student, HttpContext context)
         {
-            _studentDbContext.Student.Add(student);
+
+            if (context.Request.Method.Equals("POST"))
+            {
+                _studentDbContext.Student.Add(student);
+            }
+            else
+            {
+                _studentDbContext.Entry(student).State = EntityState.Modified;
+            }
             _studentDbContext.SaveChanges();
         }
         public void AddContactInfo(ContactInfo contactInfo)
         {
             _studentDbContext.ContactInfo.Add(contactInfo);
+            _studentDbContext.SaveChanges();
+        }
+
+        public void AddStudentCredits(Credits credit)
+        {
+            // _studentDbContext.Credits.Add(credit);
+            _studentDbContext.Entry(credit).State = EntityState.Modified;
+
             _studentDbContext.SaveChanges();
         }
 
@@ -78,6 +98,7 @@ namespace StudentsAdminPortal.Repository
                             FirstName = s.FirstName,
                             LastName = s.LastName,
                             LastDate = s.LastDate,
+                            CreditScoreId = c.Id,
                             FirstYear = c == null ? null : c.FirstYear,
                             SecondYear = c == null ? null : c.SecondYear,
                             ThirdYear = c == null ? null : c.ThirdYear,

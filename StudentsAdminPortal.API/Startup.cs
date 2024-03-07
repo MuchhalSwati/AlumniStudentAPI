@@ -25,7 +25,7 @@ namespace StudentsAdminPortal.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<StudentsDbContext>(
-               options => options.UseSqlServer(Configuration.GetConnectionString("StudentsDbContext")));
+               options => options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Students_Univ1;Integrated Security=True"));
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<IStudentServiceClass, StudentServiceClass>();
             services.AddControllers();

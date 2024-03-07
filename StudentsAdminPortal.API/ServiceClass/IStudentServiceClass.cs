@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using StudentsAdminPortal.API.Models;
 
 
@@ -11,8 +12,9 @@ namespace StudentsAdminPortal.API.ServiceClass
         List<Students> GetStudentsList(int universityId, int departmentId);
         List<Students> ReturnStudentsByYear(int universityId, int departmentId, DateTime year);
         List<StudentsAward> StudentsAward(List<Students> student);
-        void AddStudentRecord(Student students);
+        void AddStudentRecord(Student students, HttpContext method);
         void AddContactInfo(ContactInfo contact);
-        
+        void AddStudentCredits(Credits credits);
+
     }
 }

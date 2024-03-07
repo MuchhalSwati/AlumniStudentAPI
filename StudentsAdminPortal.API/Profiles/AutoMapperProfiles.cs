@@ -12,7 +12,26 @@ namespace StudentsAdminPortal.API.Profiles
         {
             CreateMap<StudentDto, Student>().ReverseMap();
             CreateMap<ContactInfoDto, ContactInfo>().ReverseMap();
-     
+            CreateMap<StudentUpdate, Student>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dest => dest.LastDate, opt => opt.MapFrom(src => src.LastDate))
+                .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId));
+            CreateMap<StudentUpdate, Credits>()
+                .ForMember(dest => dest.FirstYear, opt => opt.MapFrom(src => src.FifthYear))
+                .ForMember(dest => dest.SecondYear, opt => opt.MapFrom(src => src.SecondYear))
+                .ForMember(dest => dest.ThirdYear, opt => opt.MapFrom(src => src.ThirdYear))
+                .ForMember(dest => dest.FourthYear, opt => opt.MapFrom(src => src.FourthYear))
+                .ForMember(dest => dest.FifthYear, opt => opt.MapFrom(src => src.FifthYear));
+
+
+
+
+
         }
+
+        
+        
     }
 }

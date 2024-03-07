@@ -1,10 +1,17 @@
 ﻿using AutoMapper;
+using EFCoreDatabaseFirst.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StudentsAdminPortal.API.DomainModels;
 using StudentsAdminPortal.API.Models;
 using StudentsAdminPortal.API.ServiceClass;
 using System;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ContactInfo = StudentsAdminPortal.API.Models.ContactInfo;
+using Student = StudentsAdminPortal.API.Models.Student;
 
 namespace StudentsAdminPortal.API.Controllers
 {
@@ -19,7 +26,7 @@ namespace StudentsAdminPortal.API.Controllers
         {
             _studentServiceClass = studentServiceClass;
             _mapper = mapper;
-           
+
         }
 
         [Route("{universityId}/{studentId}/studentCreditInfo")]
@@ -27,7 +34,7 @@ namespace StudentsAdminPortal.API.Controllers
         public IActionResult GetStudentsCreditRecord(int universityId, int studentId)
         {
             var studentRecord = _studentServiceClass.GetStudentsData(universityId, studentId);
-            
+
             if (studentRecord.Count == 0)
                 return NotFound();
             return Ok(studentRecord);
@@ -64,16 +71,13 @@ namespace StudentsAdminPortal.API.Controllers
         [HttpPost("studentRecord")]
         public IActionResult EnterStudentRecord(StudentDto studentRecord)
         {
+
             if (studentRecord == null)
                 return BadRequest();
 
             //Map from DTO to Data model
             var studentModel = _mapper.Map<Student>(studentRecord);
-            _studentServiceClass.AddStudentRecord(studentModel);
-
-            //Map from Data model to DTO Model
-            //var StudentDto = _mapper.Map<StudentDto>(StudentModel);
-            //return 
+            _studentServiceClass.AddStudentRecord(studentModel, HttpContext);
             return Ok(studentModel);
         }
 
@@ -89,5 +93,49 @@ namespace StudentsAdminPortal.API.Controllers
 
             return Ok(contactModel);
         }
+
+        [HttpPut("StudentUpdate")]
+        public IActionResult updateStudentRecord(int univId, int studentId, StudentUpdate studentUpdate)
+        {
+            // var method = HttpContext.Request.Method;
+            var updateStudentRecord = _studentServiceClass.GetStudentsData(univId, studentId);
+            if (updateStudentRecord is null)
+            {
+                return NotFound();
+            }
+            var updateStud = _mapper.Map<Student>(studentUpdate);
+            var updateCredits = _mapper.Map<Credits>(studentUpdate);
+            updateStud.Id = studentId;
+            updateCredits.StudentId = studentId;
+            updateCredits.Id = updateStudentRecord.Select(e => e.creditScoreId).Single();
+
+            _studentServiceClass.AddStudentRecord(updateStud, HttpContext);
+            _studentServiceClass.AddStudentCredits(updateCredits);
+
+            var response = new Students
+            {
+                FirstName = updateStud.FirstName,
+                LastName = updateStud.LastName,
+                DepartmentId = updateStud.DepartmentId,
+                StartDate = updateStud.StartDate,
+                LastDate = updateStud.LastDate,
+                CreditScoreId = updateCredits.Id,
+                FirstYear = updateCredits.FirstYear,
+                SecondYear = updateCredits.SecondYear,
+                ThirdYear = updateCredits.ThirdYear,
+                FourthYear = updateCredits.FourthYear,
+                FifthYear = updateCredits.FifthYear,
+
+            };
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = true
+            };
+            var json = System.Text.Json.JsonSerializer.Serialize(response, options);
+            //return Ok(response);
+        }
+
+
     }
 }

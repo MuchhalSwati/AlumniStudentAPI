@@ -17,6 +17,7 @@ namespace StudentsAdminPortal.API.Models
         public string LastName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime LastDate { get; set; }
+        public int creditScoreId { get; set; }  
         public int? FirstYear { get; set; }
         public int? SecondYear { get; set; }
         public int? ThirdYear { get; set; }

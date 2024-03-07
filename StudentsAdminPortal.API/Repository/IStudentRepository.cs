@@ -1,4 +1,5 @@
-﻿using StudentsAdminPortal.API.Models;
+﻿using Microsoft.AspNetCore.Http;
+using StudentsAdminPortal.API.Models;
 using System.Collections.Generic;
 
 namespace StudentsAdminPortal.Repository
@@ -7,7 +8,8 @@ namespace StudentsAdminPortal.Repository
     {
         List<Students> GetStudentData(int UniversityId, int StudentId);
         List<Students> GetListOfStudentsForDepartment(int UniversityId, int DepartmentId);
-        void AddStudent(Student students);
+        void AddStudent(Student students, HttpContext context);
         void AddContactInfo(ContactInfo ContactInfo);
+        void AddStudentCredits(Credits credit);
     }
 }

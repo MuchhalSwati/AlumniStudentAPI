@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-
+using Microsoft.AspNetCore.Http;
 using StudentsAdminPortal.API.Models;
 using StudentsAdminPortal.Repository;
 using System;
@@ -104,6 +104,7 @@ namespace StudentsAdminPortal.API.ServiceClass
                 Email = S.Email,
                 DepartmentId = S.DepartmentId,
                 DeptName = S.DeptName,
+                creditScoreId = S.CreditScoreId,
                 FirstYear = S.FirstYear,
                 SecondYear = S.SecondYear,
                 ThirdYear = S.ThirdYear,
@@ -117,14 +118,19 @@ namespace StudentsAdminPortal.API.ServiceClass
             return Awards;
         }
 
-        public void AddStudentRecord(Student student)
+        public void AddStudentRecord(Student student, HttpContext context)
         {
-            _studentRepository.AddStudent(student);
+            _studentRepository.AddStudent(student, context);
         }
 
         public void AddContactInfo(ContactInfo contact)
         {
             _studentRepository.AddContactInfo(contact);
+        }
+
+        public void AddStudentCredits(Credits credit)
+        {
+            _studentRepository.AddStudentCredits(credit);
         }
     }
 }
