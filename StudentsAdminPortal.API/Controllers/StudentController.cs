@@ -93,12 +93,11 @@ namespace StudentsAdminPortal.API.Controllers
 
             return Ok(contactModel);
         }
-
-        [HttpPut("StudentUpdate")]
-        public IActionResult updateStudentRecord(int univId, int studentId, StudentUpdate studentUpdate)
+        [Route("{universityId}/{studentId}/StudentUpdate")]
+        [HttpPut]
+        public IActionResult updateStudentRecord(int universityId, int studentId, StudentUpdate studentUpdate)
         {
-            // var method = HttpContext.Request.Method;
-            var updateStudentRecord = _studentServiceClass.GetStudentsData(univId, studentId);
+            var updateStudentRecord = _studentServiceClass.GetStudentsData(universityId, studentId);
             if (updateStudentRecord is null)
             {
                 return NotFound();
@@ -127,13 +126,7 @@ namespace StudentsAdminPortal.API.Controllers
                 FifthYear = updateCredits.FifthYear,
 
             };
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                WriteIndented = true
-            };
-            var json = System.Text.Json.JsonSerializer.Serialize(response, options);
-            //return Ok(response);
+            return Ok(response);
         }
 
 
