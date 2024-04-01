@@ -19,16 +19,15 @@ namespace StudentsAdminPortal.API.Profiles
                 .ForMember(dest => dest.LastDate, opt => opt.MapFrom(src => src.LastDate))
                 .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId));
             CreateMap<StudentUpdate, Credits>()
-                .ForMember(dest => dest.FirstYear, opt => opt.MapFrom(src => src.FifthYear))
+                .ForMember(dest => dest.FirstYear, opt => opt.MapFrom(src => src.FirstYear))
                 .ForMember(dest => dest.SecondYear, opt => opt.MapFrom(src => src.SecondYear))
                 .ForMember(dest => dest.ThirdYear, opt => opt.MapFrom(src => src.ThirdYear))
                 .ForMember(dest => dest.FourthYear, opt => opt.MapFrom(src => src.FourthYear))
                 .ForMember(dest => dest.FifthYear, opt => opt.MapFrom(src => src.FifthYear));
-
-
-
-
-
+            CreateMap<StudentUpdate, ContactInfo>()
+           .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+           .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+           .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
         }
 
         

@@ -22,6 +22,7 @@ namespace StudentsAdminPortal.API.Models
         public int? ThirdYear { get; set; }
         public int? FourthYear { get; set; }
         public int? FifthYear { get; set; }
+        public int ContactInfoId { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public long? PhoneNumber { get; set; }

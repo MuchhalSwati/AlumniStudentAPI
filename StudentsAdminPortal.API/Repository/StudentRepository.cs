@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using EFCoreDatabaseFirst.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using StudentsAdminPortal.API.Models;
 using System.Collections.Generic;
@@ -50,29 +51,44 @@ namespace StudentsAdminPortal.Repository
                     }).ToList();
         }
 
-        public void AddStudent(Student student, HttpContext context)
+        public int AddStudent(Student student, HttpContext context)
         {
 
             if (context.Request.Method.Equals("POST"))
             {
                 _studentDbContext.Student.Add(student);
+                
             }
             else
             {
                 _studentDbContext.Entry(student).State = EntityState.Modified;
             }
             _studentDbContext.SaveChanges();
+          return student.Id;
         }
-        public void AddContactInfo(ContactInfo contactInfo)
+        public void AddContactInfo(ContactInfo contactInfo, HttpContext context)
         {
-            _studentDbContext.ContactInfo.Add(contactInfo);
+            if (context.Request.Method.Equals("POST"))
+            {
+                _studentDbContext.ContactInfo.Add(contactInfo);
+            }
+            else
+            {
+                _studentDbContext.Entry(contactInfo).State = EntityState.Modified;
+            }
             _studentDbContext.SaveChanges();
         }
 
-        public void AddStudentCredits(Credits credit)
+        public void AddStudentCredits(Credits credit, HttpContext context)
         {
-            // _studentDbContext.Credits.Add(credit);
-            _studentDbContext.Entry(credit).State = EntityState.Modified;
+            if (context.Request.Method.Equals("POST"))
+            {
+               _studentDbContext.Credits.Add(credit);
+            }
+            else
+            {
+                _studentDbContext.Entry(credit).State = EntityState.Modified;
+            }
 
             _studentDbContext.SaveChanges();
         }
@@ -106,7 +122,8 @@ namespace StudentsAdminPortal.Repository
                             FifthYear = c == null ? null : c.FifthYear,
                             Address = a == null ? null : a.Address,
                             Email = a == null ? null : a.Email,
-                            PhoneNumber = a == null ? null : a.PhoneNumber
+                            PhoneNumber = a == null ? null : a.PhoneNumber,
+                            ContactInfoId = a.Id,
 
                         }).ToList();
             return stud;

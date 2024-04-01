@@ -69,16 +69,22 @@ namespace StudentsAdminPortal.API.Controllers
 
 
         [HttpPost("studentRecord")]
-        public IActionResult EnterStudentRecord(StudentDto studentRecord)
+        public IActionResult EnterStudentRecord(StudentUpdate studentRecord)
         {
 
             if (studentRecord == null)
                 return BadRequest();
 
             //Map from DTO to Data model
-            var studentModel = _mapper.Map<Student>(studentRecord);
-            _studentServiceClass.AddStudentRecord(studentModel, HttpContext);
-            return Ok(studentModel);
+            //var studentModel = _mapper.Map<Student>(studentRecord);
+
+            var addStud = _mapper.Map<Student>(studentRecord);
+            var addCredits = _mapper.Map<Credits>(studentRecord);
+            var addContact = _mapper.Map<ContactInfo>(studentRecord);
+            _studentServiceClass.AddStudentRecord(addStud, HttpContext);
+            _studentServiceClass.AddContactInfo(addContact, HttpContext);
+            _studentServiceClass.AddStudentCredits(addCredits, HttpContext);
+            return Ok();
         }
 
         [HttpPost("ContactInfo")]
@@ -89,7 +95,7 @@ namespace StudentsAdminPortal.API.Controllers
 
             //Map from DTO to Data model
             var contactModel = _mapper.Map<ContactInfo>(contactInfoRecord);
-            _studentServiceClass.AddContactInfo(contactModel);
+            _studentServiceClass.AddContactInfo(contactModel, HttpContext);
 
             return Ok(contactModel);
         }
@@ -104,12 +110,16 @@ namespace StudentsAdminPortal.API.Controllers
             }
             var updateStud = _mapper.Map<Student>(studentUpdate);
             var updateCredits = _mapper.Map<Credits>(studentUpdate);
+            var updateContact = _mapper.Map<ContactInfo>(studentUpdate);
             updateStud.Id = studentId;
             updateCredits.StudentId = studentId;
             updateCredits.Id = updateStudentRecord.Select(e => e.creditScoreId).Single();
+            updateContact.StudentId = studentId;
+            updateContact.Id = updateStudentRecord.Select(e => e.ContactInfoId).Single();
 
             _studentServiceClass.AddStudentRecord(updateStud, HttpContext);
-            _studentServiceClass.AddStudentCredits(updateCredits);
+            _studentServiceClass.AddStudentCredits(updateCredits, HttpContext);
+            _studentServiceClass.AddContactInfo(updateContact, HttpContext);
 
             var response = new Students
             {
@@ -124,6 +134,10 @@ namespace StudentsAdminPortal.API.Controllers
                 ThirdYear = updateCredits.ThirdYear,
                 FourthYear = updateCredits.FourthYear,
                 FifthYear = updateCredits.FifthYear,
+                Address = updateContact.Address,
+                PhoneNumber = updateContact.PhoneNumber,
+                 Email = updateContact.Email,
+                 Id = updateStud.Id
 
             };
             return Ok(response);

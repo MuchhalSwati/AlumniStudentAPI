@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using EFCoreDatabaseFirst.Models;
 using Microsoft.AspNetCore.Http;
 using StudentsAdminPortal.API.Models;
 using StudentsAdminPortal.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ContactInfo = StudentsAdminPortal.API.Models.ContactInfo;
+using Student = StudentsAdminPortal.API.Models.Student;
 
 namespace StudentsAdminPortal.API.ServiceClass
 {
@@ -12,6 +15,7 @@ namespace StudentsAdminPortal.API.ServiceClass
     {
         private readonly IStudentRepository _studentRepository;
         private List<StudentsAward> StudentsList = new List<StudentsAward>();
+        int studentId = 0;
 
 
 
@@ -105,6 +109,7 @@ namespace StudentsAdminPortal.API.ServiceClass
                 DepartmentId = S.DepartmentId,
                 DeptName = S.DeptName,
                 creditScoreId = S.CreditScoreId,
+                 ContactInfoId = S.ContactInfoId,
                 FirstYear = S.FirstYear,
                 SecondYear = S.SecondYear,
                 ThirdYear = S.ThirdYear,
@@ -120,17 +125,19 @@ namespace StudentsAdminPortal.API.ServiceClass
 
         public void AddStudentRecord(Student student, HttpContext context)
         {
-            _studentRepository.AddStudent(student, context);
+            studentId = _studentRepository.AddStudent(student, context);
         }
 
-        public void AddContactInfo(ContactInfo contact)
+        public void AddContactInfo(ContactInfo contact, HttpContext context)
         {
-            _studentRepository.AddContactInfo(contact);
+            contact.StudentId = studentId;
+            _studentRepository.AddContactInfo(contact, context);
         }
 
-        public void AddStudentCredits(Credits credit)
+        public void AddStudentCredits(Credits credit, HttpContext context)
         {
-            _studentRepository.AddStudentCredits(credit);
+            credit.StudentId = studentId;
+            _studentRepository.AddStudentCredits(credit, context);
         }
     }
 }

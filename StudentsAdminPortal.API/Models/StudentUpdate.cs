@@ -9,6 +9,9 @@ namespace StudentsAdminPortal.API.Models
         public string LastName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime LastDate { get; set; }
+        public string Address { get; set; }
+        public string Email { get; set; }
+        public long? PhoneNumber { get; set; }
         public int? FirstYear { get; set; }
         public int? SecondYear { get; set; }
         public int? ThirdYear { get; set; }

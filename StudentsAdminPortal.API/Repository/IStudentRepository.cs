@@ -8,8 +8,8 @@ namespace StudentsAdminPortal.Repository
     {
         List<Students> GetStudentData(int UniversityId, int StudentId);
         List<Students> GetListOfStudentsForDepartment(int UniversityId, int DepartmentId);
-        void AddStudent(Student students, HttpContext context);
-        void AddContactInfo(ContactInfo ContactInfo);
-        void AddStudentCredits(Credits credit);
+        int AddStudent(Student students, HttpContext context);
+        void AddContactInfo(ContactInfo ContactInfo, HttpContext context);
+        void AddStudentCredits(Credits credit, HttpContext context);
     }
 }

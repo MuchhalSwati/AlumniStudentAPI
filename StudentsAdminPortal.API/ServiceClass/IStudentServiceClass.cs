@@ -13,8 +13,8 @@ namespace StudentsAdminPortal.API.ServiceClass
         List<Students> ReturnStudentsByYear(int universityId, int departmentId, DateTime year);
         List<StudentsAward> StudentsAward(List<Students> student);
         void AddStudentRecord(Student students, HttpContext method);
-        void AddContactInfo(ContactInfo contact);
-        void AddStudentCredits(Credits credits);
+        void AddContactInfo(ContactInfo contact, HttpContext method);
+        void AddStudentCredits(Credits credits, HttpContext method);
 
     }
 }
