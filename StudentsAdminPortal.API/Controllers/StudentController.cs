@@ -34,11 +34,8 @@ namespace StudentsAdminPortal.API.Controllers
         public IActionResult GetStudentsCreditRecord(int universityId, int studentId)
         {
             var studentRecord = _studentServiceClass.GetStudentsData(universityId, studentId);
-
-            if (studentRecord.Count == 0)
-                return NotFound();
-            return Ok(studentRecord);
-
+            
+            return studentRecord != null ? Ok(studentRecord) : NotFound();
 
         }
 
@@ -71,6 +68,7 @@ namespace StudentsAdminPortal.API.Controllers
         [HttpPost("studentRecord")]
         public IActionResult EnterStudentRecord(StudentUpdate studentRecord)
         {
+            throw new Exception();
 
             if (studentRecord == null)
                 return BadRequest();
@@ -87,18 +85,18 @@ namespace StudentsAdminPortal.API.Controllers
             return Ok();
         }
 
-        [HttpPost("ContactInfo")]
-        public IActionResult EnterContactInfo(ContactInfoDto contactInfoRecord)
-        {
-            if (contactInfoRecord == null)
-                return BadRequest();
+        //[HttpPost("ContactInfo")]
+        //public IActionResult EnterContactInfo(ContactInfoDto contactInfoRecord)
+        //{
+        //    if (contactInfoRecord == null)
+        //        return BadRequest();
 
-            //Map from DTO to Data model
-            var contactModel = _mapper.Map<ContactInfo>(contactInfoRecord);
-            _studentServiceClass.AddContactInfo(contactModel, HttpContext);
+        //    //Map from DTO to Data model
+        //    var contactModel = _mapper.Map<ContactInfo>(contactInfoRecord);
+        //    _studentServiceClass.AddContactInfo(contactModel, HttpContext);
 
-            return Ok(contactModel);
-        }
+        //    return Ok(contactModel);
+        //}
         [Route("{universityId}/{studentId}/StudentUpdate")]
         [HttpPut]
         public IActionResult updateStudentRecord(int universityId, int studentId, StudentUpdate studentUpdate)

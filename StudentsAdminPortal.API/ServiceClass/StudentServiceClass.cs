@@ -28,8 +28,9 @@ namespace StudentsAdminPortal.API.ServiceClass
         public List<StudentsAward> GetStudentsData(int universityId, int studentId)
         {
             var StudentRecord = _studentRepository.GetStudentData(universityId, studentId);
-            var Students = StudentsAward(StudentRecord);
-            return Students;
+
+            return StudentRecord?.Any() == true ? StudentsAward(StudentRecord) : null;
+           
         }
 
         public List<Students> GetStudentsList(int universityId, int departmentId)

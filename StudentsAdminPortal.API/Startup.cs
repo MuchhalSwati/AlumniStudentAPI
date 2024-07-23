@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,9 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StudentsAdminPortal.API.Exceptions;
 using StudentsAdminPortal.API.Models;
 using StudentsAdminPortal.API.ServiceClass;
 using StudentsAdminPortal.Repository;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace StudentsAdminPortal.API
@@ -31,11 +34,16 @@ namespace StudentsAdminPortal.API
             services.AddControllers();
             services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition
             = JsonIgnoreCondition.WhenWritingNull);
+            services.AddControllers().AddFluentValidation(v =>
+            {
+                v.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentsAdminPortal.API", Version = "v1" });
             });
             services.AddAutoMapper(typeof(Startup).Assembly);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,11 +51,12 @@ namespace StudentsAdminPortal.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+               app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentsAdminPortal.API v1"));
             }
 
+            app.UseMiddleware<GlobalExceptionHandler>();
             app.UseCors( x => x.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
