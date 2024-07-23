@@ -6,6 +6,7 @@ using StudentsAdminPortal.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ContactInfo = StudentsAdminPortal.API.Models.ContactInfo;
 using Student = StudentsAdminPortal.API.Models.Student;
 
@@ -33,16 +34,16 @@ namespace StudentsAdminPortal.API.ServiceClass
            
         }
 
-        public List<Students> GetStudentsList(int universityId, int departmentId)
+        public async Task<List<Students>> GetStudentsListAsync(int universityId, int departmentId)
         {
-            var studentDetails = _studentRepository.GetListOfStudentsForDepartment(universityId, departmentId);
+            var studentDetails = await _studentRepository.GetListOfStudentsForDepartmentAsync(universityId, departmentId);
             return studentDetails;
 
         }
 
-        public List<Students> ReturnStudentsByYear(int universityId, int deptId, DateTime year)
+        public async Task<List<Students>> ReturnStudentsByYearAsync(int universityId, int deptId, DateTime year)
         {
-            var studentDetails = _studentRepository.GetListOfStudentsForDepartment(universityId, deptId);
+            var studentDetails = await _studentRepository.GetListOfStudentsForDepartmentAsync(universityId, deptId);
             var results = studentDetails.Where(e => e.StartDate.Equals(year)).ToList();
             return results;
         }

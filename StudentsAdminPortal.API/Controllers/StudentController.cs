@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using ContactInfo = StudentsAdminPortal.API.Models.ContactInfo;
 using Student = StudentsAdminPortal.API.Models.Student;
 
@@ -41,9 +42,9 @@ namespace StudentsAdminPortal.API.Controllers
 
         [Route("{universityId}/{departmentId}/department")]
         [HttpGet]
-        public IActionResult GetlistOfStudentsForDepartment(int universityId, int departmentId)
+        public async Task<IActionResult> GetlistOfStudentsForDepartmentAsync(int universityId, int departmentId)
         {
-            var stud = _studentServiceClass.GetStudentsList(universityId, departmentId);
+            var stud = await _studentServiceClass.GetStudentsListAsync(universityId, departmentId);
             if (stud.Count == 0)
                 return NotFound();
 
@@ -53,10 +54,10 @@ namespace StudentsAdminPortal.API.Controllers
 
         [Route("{universityId}/{departmentId}/year")]
         [HttpGet]
-        public IActionResult GetlistOfStudentsForDepartmentAndYear(int universityId, int departmentId, DateTime year)
+        public async Task<IActionResult> GetlistOfStudentsForDepartmentAndYear(int universityId, int departmentId, DateTime year)
         {
 
-            var studentDetails = _studentServiceClass.ReturnStudentsByYear(universityId, departmentId, year);
+            var studentDetails = await _studentServiceClass.ReturnStudentsByYearAsync(universityId, departmentId, year);
             var stud = _studentServiceClass.StudentsAward(studentDetails);
             if (stud.Count == 0)
                 return NotFound();
