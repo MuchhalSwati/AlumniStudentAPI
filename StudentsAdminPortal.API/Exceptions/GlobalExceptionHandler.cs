@@ -2,7 +2,9 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using System.IdentityModel;
+using StudentsAdminPortal.API.Models;
+using ValidationException = FluentValidation.ValidationException;
+
 
 namespace StudentsAdminPortal.API.Exceptions
 {
@@ -28,8 +30,22 @@ namespace StudentsAdminPortal.API.Exceptions
                 switch(error)
                 {
                     case BadHttpRequestException e:
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    break;
+                    case ValidationException:
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        await response.WriteAsync(new ErrorDetails
+                        {
+                            StatusCode = (int)HttpStatusCode.BadRequest,
+                            Message = "Bad Request exception"
+                        }.ToString());
+                        break;
+                    default:
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        await response.WriteAsync(new ErrorDetails
+                        {
+                            StatusCode = response.StatusCode,
+                            Message = "Internal Server Error"
+                        }.ToString());
+                        break;
 
                 }
             }

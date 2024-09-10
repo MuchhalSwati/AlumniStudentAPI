@@ -53,7 +53,7 @@ namespace StudentsAdminPortal.Repository
            return  await studentsList.ToListAsync();
         }
 
-        public int AddStudent(Student student, HttpContext context)
+        public async Task<int> AddStudent(Student student, HttpContext context)
         {
 
             if (context.Request.Method.Equals("POST"))
@@ -65,10 +65,10 @@ namespace StudentsAdminPortal.Repository
             {
                 _studentDbContext.Entry(student).State = EntityState.Modified;
             }
-            _studentDbContext.SaveChanges();
+          await _studentDbContext.SaveChangesAsync();
           return student.Id;
         }
-        public void AddContactInfo(ContactInfo contactInfo, HttpContext context)
+        public async Task AddContactInfo(ContactInfo contactInfo, HttpContext context)
         {
             if (context.Request.Method.Equals("POST"))
             {
@@ -78,10 +78,10 @@ namespace StudentsAdminPortal.Repository
             {
                 _studentDbContext.Entry(contactInfo).State = EntityState.Modified;
             }
-            _studentDbContext.SaveChanges();
+            await _studentDbContext.SaveChangesAsync();
         }
 
-        public void AddStudentCredits(Credits credit, HttpContext context)
+        public async Task AddStudentCredits(Credits credit, HttpContext context)
         {
             if (context.Request.Method.Equals("POST"))
             {
@@ -92,10 +92,10 @@ namespace StudentsAdminPortal.Repository
                 _studentDbContext.Entry(credit).State = EntityState.Modified;
             }
 
-            _studentDbContext.SaveChanges();
+           await _studentDbContext.SaveChangesAsync();
         }
 
-        public List<Students> GetStudentData(int universityId, int studentId)
+        public async Task<List<Students>> GetStudentData(int universityId, int studentId)
         {
             var stud = (from u in _studentDbContext.University
                         join d in _studentDbContext.Department on u.Id equals d.UniversityId
@@ -127,8 +127,8 @@ namespace StudentsAdminPortal.Repository
                             PhoneNumber = a == null ? null : a.PhoneNumber,
                             ContactInfoId = a.Id,
 
-                        }).ToList();
-            return stud;
+                        }).ToListAsync();
+            return await stud;
         }
     }
 }

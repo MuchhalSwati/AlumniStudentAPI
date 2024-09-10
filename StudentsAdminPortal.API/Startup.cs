@@ -1,3 +1,4 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,7 +37,8 @@ namespace StudentsAdminPortal.API
             = JsonIgnoreCondition.WhenWritingNull);
             services.AddControllers().AddFluentValidation(v =>
             {
-                v.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+                v.RegisterValidatorsFromAssemblyContaining<Startup>();
+                v.ValidatorOptions.CascadeMode = CascadeMode.Stop;
             });
             services.AddSwaggerGen(c =>
             {

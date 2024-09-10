@@ -9,13 +9,13 @@ namespace StudentsAdminPortal.API.ServiceClass
 {
     public interface IStudentServiceClass
     {
-        List<StudentsAward> GetStudentsData(int universityId, int studentId);
+        Task<List<StudentsAward>> GetStudentsData(int universityId, int studentId);
         Task<List<Students>> GetStudentsListAsync(int universityId, int departmentId);
         Task<List<Students>> ReturnStudentsByYearAsync(int universityId, int departmentId, DateTime year);
         List<StudentsAward> StudentsAward(List<Students> student);
-        void AddStudentRecord(Student students, HttpContext method);
-        void AddContactInfo(ContactInfo contact, HttpContext method);
-        void AddStudentCredits(Credits credits, HttpContext method);
+        Task AddStudentRecord(Student students, HttpContext method);
+        Task AddContactInfo(ContactInfo contact, HttpContext method);
+        Task AddStudentCredits(Credits credits, HttpContext method);
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EFCoreDatabaseFirst.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -22,7 +23,6 @@ namespace StudentsAdminPortal.API.Controllers
     {
         private readonly IStudentServiceClass _studentServiceClass;
         private readonly IMapper _mapper;
-
         public StudentController(IStudentServiceClass studentServiceClass, IMapper mapper)
         {
             _studentServiceClass = studentServiceClass;
@@ -32,9 +32,9 @@ namespace StudentsAdminPortal.API.Controllers
 
         [Route("{universityId}/{studentId}/studentCreditInfo")]
         [HttpGet]
-        public IActionResult GetStudentsCreditRecord(int universityId, int studentId)
+        public async Task<IActionResult> GetStudentsCreditRecord(int universityId, int studentId)
         {
-            var studentRecord = _studentServiceClass.GetStudentsData(universityId, studentId);
+            var studentRecord = await _studentServiceClass.GetStudentsData(universityId, studentId);
             
             return studentRecord != null ? Ok(studentRecord) : NotFound();
 
@@ -67,42 +67,25 @@ namespace StudentsAdminPortal.API.Controllers
 
 
         [HttpPost("studentRecord")]
-        public IActionResult EnterStudentRecord(StudentUpdate studentRecord)
+        public async Task<IActionResult> EnterStudentRecord(StudentUpdate studentRecord)
         {
-            throw new Exception();
-
             if (studentRecord == null)
                 return BadRequest();
-
-            //Map from DTO to Data model
-            //var studentModel = _mapper.Map<Student>(studentRecord);
 
             var addStud = _mapper.Map<Student>(studentRecord);
             var addCredits = _mapper.Map<Credits>(studentRecord);
             var addContact = _mapper.Map<ContactInfo>(studentRecord);
-            _studentServiceClass.AddStudentRecord(addStud, HttpContext);
-            _studentServiceClass.AddContactInfo(addContact, HttpContext);
-            _studentServiceClass.AddStudentCredits(addCredits, HttpContext);
+            await _studentServiceClass.AddStudentRecord(addStud, HttpContext);
+            await _studentServiceClass.AddContactInfo(addContact, HttpContext);
+            await _studentServiceClass.AddStudentCredits(addCredits, HttpContext);
             return Ok();
         }
-
-        //[HttpPost("ContactInfo")]
-        //public IActionResult EnterContactInfo(ContactInfoDto contactInfoRecord)
-        //{
-        //    if (contactInfoRecord == null)
-        //        return BadRequest();
-
-        //    //Map from DTO to Data model
-        //    var contactModel = _mapper.Map<ContactInfo>(contactInfoRecord);
-        //    _studentServiceClass.AddContactInfo(contactModel, HttpContext);
-
-        //    return Ok(contactModel);
-        //}
+       
         [Route("{universityId}/{studentId}/StudentUpdate")]
         [HttpPut]
-        public IActionResult updateStudentRecord(int universityId, int studentId, StudentUpdate studentUpdate)
+        public async Task<IActionResult> updateStudentRecord(int universityId, int studentId, StudentUpdate studentUpdate)
         {
-            var updateStudentRecord = _studentServiceClass.GetStudentsData(universityId, studentId);
+            var updateStudentRecord = await _studentServiceClass.GetStudentsData(universityId, studentId);
             if (updateStudentRecord is null)
             {
                 return NotFound();
@@ -116,9 +99,9 @@ namespace StudentsAdminPortal.API.Controllers
             updateContact.StudentId = studentId;
             updateContact.Id = updateStudentRecord.Select(e => e.ContactInfoId).Single();
 
-            _studentServiceClass.AddStudentRecord(updateStud, HttpContext);
-            _studentServiceClass.AddStudentCredits(updateCredits, HttpContext);
-            _studentServiceClass.AddContactInfo(updateContact, HttpContext);
+            await _studentServiceClass.AddStudentRecord(updateStud, HttpContext);
+            await _studentServiceClass.AddStudentCredits(updateCredits, HttpContext);
+            await _studentServiceClass.AddContactInfo(updateContact, HttpContext);
 
             var response = new Students
             {

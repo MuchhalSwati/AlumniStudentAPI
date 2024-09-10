@@ -26,9 +26,9 @@ namespace StudentsAdminPortal.API.ServiceClass
 
         }
 
-        public List<StudentsAward> GetStudentsData(int universityId, int studentId)
+        public async Task<List<StudentsAward>> GetStudentsData(int universityId, int studentId)
         {
-            var StudentRecord = _studentRepository.GetStudentData(universityId, studentId);
+            var StudentRecord = await _studentRepository.GetStudentData(universityId, studentId);
 
             return StudentRecord?.Any() == true ? StudentsAward(StudentRecord) : null;
            
@@ -125,21 +125,21 @@ namespace StudentsAdminPortal.API.ServiceClass
             return Awards;
         }
 
-        public void AddStudentRecord(Student student, HttpContext context)
+        public async Task AddStudentRecord(Student student, HttpContext context)
         {
-            studentId = _studentRepository.AddStudent(student, context);
+            studentId = await _studentRepository.AddStudent(student, context);
         }
 
-        public void AddContactInfo(ContactInfo contact, HttpContext context)
+        public async Task AddContactInfo(ContactInfo contact, HttpContext context)
         {
             contact.StudentId = studentId;
-            _studentRepository.AddContactInfo(contact, context);
+            await _studentRepository.AddContactInfo(contact, context);
         }
 
-        public void AddStudentCredits(Credits credit, HttpContext context)
+        public async Task AddStudentCredits(Credits credit, HttpContext context)
         {
             credit.StudentId = studentId;
-            _studentRepository.AddStudentCredits(credit, context);
+            await _studentRepository.AddStudentCredits(credit, context);
         }
     }
 }
