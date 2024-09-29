@@ -16,6 +16,9 @@ namespace StudentsAdminPortal.API.ServiceClass
         Task AddStudentRecord(Student students, HttpContext method);
         Task AddContactInfo(ContactInfo contact, HttpContext method);
         Task AddStudentCredits(Credits credits, HttpContext method);
+        Task DeleteStudent(IEnumerable<Student> student);
+        //Task DeleteStudent(IEnumerable<Credits> credit);
+        //Task DeleteStudent(IEnumerable<ContactInfo> contactInfo);
 
     }
 }

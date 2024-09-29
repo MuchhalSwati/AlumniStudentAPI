@@ -12,5 +12,8 @@ namespace StudentsAdminPortal.Repository
         Task<int> AddStudent(Student students, HttpContext context);
         Task AddContactInfo(ContactInfo ContactInfo, HttpContext context);
         Task AddStudentCredits(Credits credit, HttpContext context);
+        Task DeleteStudentRecord(IEnumerable<Student> student);
+        //Task DeleteStudentRecord(IEnumerable<Credits> student);
+        //Task DeleteStudentRecord(IEnumerable<ContactInfo> student);
     }
 }

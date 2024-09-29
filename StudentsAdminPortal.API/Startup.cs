@@ -33,6 +33,8 @@ namespace StudentsAdminPortal.API
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<IStudentServiceClass, StudentServiceClass>();
             services.AddControllers();
+            services.AddMemoryCache();
+            services.AddLazyCache();
             services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition
             = JsonIgnoreCondition.WhenWritingNull);
             services.AddControllers().AddFluentValidation(v =>

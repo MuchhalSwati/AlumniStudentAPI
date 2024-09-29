@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
 using EFCoreDatabaseFirst.Models;
 using FluentValidation;
+using LazyCache;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using StudentsAdminPortal.API.Caching;
 using StudentsAdminPortal.API.DomainModels;
 using StudentsAdminPortal.API.Models;
 using StudentsAdminPortal.API.ServiceClass;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -23,10 +27,12 @@ namespace StudentsAdminPortal.API.Controllers
     {
         private readonly IStudentServiceClass _studentServiceClass;
         private readonly IMapper _mapper;
-        public StudentController(IStudentServiceClass studentServiceClass, IMapper mapper)
+        private ICacheProvider _cacheProvider;
+        public StudentController(IStudentServiceClass studentServiceClass, IMapper mapper, ICacheProvider cache)
         {
             _studentServiceClass = studentServiceClass;
             _mapper = mapper;
+            _cacheProvider = cache;
 
         }
 
@@ -44,11 +50,23 @@ namespace StudentsAdminPortal.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetlistOfStudentsForDepartmentAsync(int universityId, int departmentId)
         {
-            var stud = await _studentServiceClass.GetStudentsListAsync(universityId, departmentId);
-            if (stud.Count == 0)
+            string cacheKey = Cachekeys.GetStudentCacheKey(universityId, departmentId);
+
+            if (!_cacheProvider.TryGetValue(cacheKey, out List<Students> students))
+            {
+                students = await _studentServiceClass.GetStudentsListAsync(universityId, departmentId);
+                var cacheEntryOption = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(60),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Size = 1024
+                };
+                _cacheProvider.Set(cacheKey, students, cacheEntryOption);
+            }
+            if (students.Count == 0)
                 return NotFound();
 
-            return Ok(new { Students = stud });
+            return Ok(new { Students = students });
 
         }
 
@@ -124,6 +142,32 @@ namespace StudentsAdminPortal.API.Controllers
             };
             return Ok(response);
         }
+
+        [Route("{universityId}/{studentId}/StudentDelete")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteStudentRecord(int universityId, int studentId)
+        {
+            var studentRecordToDelete = await _studentServiceClass.GetStudentsData(universityId, studentId);
+            if (studentRecordToDelete is null)
+                return NotFound();
+
+            var studentRecord = studentRecordToDelete.Select(s => new Student
+            {
+                Id = s.Id,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                StartDate = s.StartDate,
+                LastDate = s.LastDate,
+                DepartmentId = s.DepartmentId
+            });
+
+           await _studentServiceClass.DeleteStudent(studentRecord);
+           return NoContent();
+
+        }
+
+
+
 
 
     }

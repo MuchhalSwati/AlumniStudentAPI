@@ -39,7 +39,7 @@ namespace StudentsAdminPortal.Repository
                                    FirstName = s.FirstName,
                                    LastName = s.LastName,
                                    LastDate = s.LastDate,
-                                   CreditScoreId = c.Id,
+                                   CreditScoreId = c != null ? c.Id : 0,
                                    FirstYear = c == null ? null : c.FirstYear,
                                    SecondYear = c == null ? null : c.SecondYear,
                                    ThirdYear = c == null ? null : c.ThirdYear,
@@ -116,7 +116,7 @@ namespace StudentsAdminPortal.Repository
                             FirstName = s.FirstName,
                             LastName = s.LastName,
                             LastDate = s.LastDate,
-                            CreditScoreId = c.Id,
+                            CreditScoreId = c != null ? c.Id : 0,
                             FirstYear = c == null ? null : c.FirstYear,
                             SecondYear = c == null ? null : c.SecondYear,
                             ThirdYear = c == null ? null : c.ThirdYear,
@@ -125,11 +125,19 @@ namespace StudentsAdminPortal.Repository
                             Address = a == null ? null : a.Address,
                             Email = a == null ? null : a.Email,
                             PhoneNumber = a == null ? null : a.PhoneNumber,
-                            ContactInfoId = a.Id,
+                            ContactInfoId = a != null ? a.Id : 0,
 
                         }).ToListAsync();
             return await stud;
         }
+
+        public async Task DeleteStudentRecord(IEnumerable<Student> student)
+        {
+            _studentDbContext.Student.RemoveRange(student); 
+
+            await _studentDbContext.SaveChangesAsync();
+        }
+
     }
 }
 

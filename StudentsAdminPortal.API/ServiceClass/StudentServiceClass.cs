@@ -31,7 +31,7 @@ namespace StudentsAdminPortal.API.ServiceClass
             var StudentRecord = await _studentRepository.GetStudentData(universityId, studentId);
 
             return StudentRecord?.Any() == true ? StudentsAward(StudentRecord) : null;
-           
+
         }
 
         public async Task<List<Students>> GetStudentsListAsync(int universityId, int departmentId)
@@ -50,7 +50,7 @@ namespace StudentsAdminPortal.API.ServiceClass
 
         public List<StudentsAward> StudentsAward(List<Students> student)
         {
-           
+
             StudentsAward record;
             foreach (var studt in student)
             {
@@ -84,12 +84,12 @@ namespace StudentsAdminPortal.API.ServiceClass
                     StudentsList.Add(record);
                 }
 
-                if(award == null)
+                if (award == null)
                 {
                     record = MappingStudentsAwardWithStudents(award, studt);
                     StudentsList.Add(record);
                 }
-                   
+
             }
             return StudentsList;
         }
@@ -111,7 +111,7 @@ namespace StudentsAdminPortal.API.ServiceClass
                 DepartmentId = S.DepartmentId,
                 DeptName = S.DeptName,
                 creditScoreId = S.CreditScoreId,
-                 ContactInfoId = S.ContactInfoId,
+                ContactInfoId = S.ContactInfoId,
                 FirstYear = S.FirstYear,
                 SecondYear = S.SecondYear,
                 ThirdYear = S.ThirdYear,
@@ -140,6 +140,11 @@ namespace StudentsAdminPortal.API.ServiceClass
         {
             credit.StudentId = studentId;
             await _studentRepository.AddStudentCredits(credit, context);
+        }
+
+        public async Task DeleteStudent(IEnumerable<Student> student)
+        {
+            await _studentRepository.DeleteStudentRecord(student);
         }
     }
 }
