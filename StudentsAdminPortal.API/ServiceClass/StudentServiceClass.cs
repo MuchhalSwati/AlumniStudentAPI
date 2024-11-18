@@ -125,9 +125,9 @@ namespace StudentsAdminPortal.API.ServiceClass
             return Awards;
         }
 
-        public async Task AddStudentRecord(Student student, HttpContext context)
+        public async Task<int> AddStudentRecord(Student student, HttpContext context)
         {
-            studentId = await _studentRepository.AddStudent(student, context);
+            return studentId = await _studentRepository.AddStudent(student, context);
         }
 
         public async Task AddContactInfo(ContactInfo contact, HttpContext context)

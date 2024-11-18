@@ -13,7 +13,7 @@ namespace StudentsAdminPortal.API.ServiceClass
         Task<List<Students>> GetStudentsListAsync(int universityId, int departmentId);
         Task<List<Students>> ReturnStudentsByYearAsync(int universityId, int departmentId, DateTime year);
         List<StudentsAward> StudentsAward(List<Students> student);
-        Task AddStudentRecord(Student students, HttpContext method);
+        Task<int> AddStudentRecord(Student students, HttpContext method);
         Task AddContactInfo(ContactInfo contact, HttpContext method);
         Task AddStudentCredits(Credits credits, HttpContext method);
         Task DeleteStudent(IEnumerable<Student> student);

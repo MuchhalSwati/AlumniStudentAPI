@@ -57,15 +57,13 @@ namespace StudentsAdminPortal.API.Controllers
                 students = await _studentServiceClass.GetStudentsListAsync(universityId, departmentId);
                 var cacheEntryOption = new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(60),
-                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+                    SlidingExpiration = TimeSpan.FromSeconds(30),
                     Size = 1024
                 };
                 _cacheProvider.Set(cacheKey, students, cacheEntryOption);
             }
-            if (students.Count == 0)
-                return NotFound();
-
+            
             return Ok(new { Students = students });
 
         }
@@ -77,8 +75,6 @@ namespace StudentsAdminPortal.API.Controllers
 
             var studentDetails = await _studentServiceClass.ReturnStudentsByYearAsync(universityId, departmentId, year);
             var stud = _studentServiceClass.StudentsAward(studentDetails);
-            if (stud.Count == 0)
-                return NotFound();
 
             return Ok(stud);
         }
@@ -93,10 +89,10 @@ namespace StudentsAdminPortal.API.Controllers
             var addStud = _mapper.Map<Student>(studentRecord);
             var addCredits = _mapper.Map<Credits>(studentRecord);
             var addContact = _mapper.Map<ContactInfo>(studentRecord);
-            await _studentServiceClass.AddStudentRecord(addStud, HttpContext);
+            var studentId = await _studentServiceClass.AddStudentRecord(addStud, HttpContext);
             await _studentServiceClass.AddContactInfo(addContact, HttpContext);
             await _studentServiceClass.AddStudentCredits(addCredits, HttpContext);
-            return Ok();
+            return Ok(new {studentId});
         }
        
         [Route("{universityId}/{studentId}/StudentUpdate")]
@@ -104,10 +100,7 @@ namespace StudentsAdminPortal.API.Controllers
         public async Task<IActionResult> updateStudentRecord(int universityId, int studentId, StudentUpdate studentUpdate)
         {
             var updateStudentRecord = await _studentServiceClass.GetStudentsData(universityId, studentId);
-            if (updateStudentRecord is null)
-            {
-                return NotFound();
-            }
+
             var updateStud = _mapper.Map<Student>(studentUpdate);
             var updateCredits = _mapper.Map<Credits>(studentUpdate);
             var updateContact = _mapper.Map<ContactInfo>(studentUpdate);
@@ -148,9 +141,7 @@ namespace StudentsAdminPortal.API.Controllers
         public async Task<IActionResult> DeleteStudentRecord(int universityId, int studentId)
         {
             var studentRecordToDelete = await _studentServiceClass.GetStudentsData(universityId, studentId);
-            if (studentRecordToDelete is null)
-                return NotFound();
-
+        
             var studentRecord = studentRecordToDelete.Select(s => new Student
             {
                 Id = s.Id,
